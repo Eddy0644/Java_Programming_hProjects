@@ -71,3 +71,4 @@ public class Fract {
         System.out.printf("[%3d/%3d]\n", this.num, this.den);
     }
 }
+
