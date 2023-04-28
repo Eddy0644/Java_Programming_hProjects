@@ -69,7 +69,7 @@ public class PokerCard {
         Vector<Vector<String>> ans = new Vector<>();
         ans.addElement(new Vector<>());
         for (int i = 0, u = 0; u < 3; ) {
-            ans.elementAt(u).addElement(cardSet.elementAt(i));
+            ans.elementAt(u).addElement(cardSet.elementAt(u * 18 + i));
             if (i++ == 17) {
                 i = 0;
                 u++;
