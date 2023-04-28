@@ -59,8 +59,8 @@ public class PokerCard {
     public void shuffle() {
         // 150 is shuffle rounds, the more it is, more randomness the cardSet is
         for (int i = 0; i < 150; i++) {
-            int IndexA = (int) (Math.random() * 54 - 1);
-            int IndexB = (int) (Math.random() * 54 - 1);
+            int IndexA = (int) (Math.random() * 54 );
+            int IndexB = (int) (Math.random() * 54 );
             // use set() and get() to swap to avoid errors.
             String tempObj = cardSet.elementAt(IndexA);
             cardSet.set(IndexA, cardSet.get(IndexB));
