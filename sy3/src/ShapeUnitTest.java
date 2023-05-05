@@ -217,8 +217,6 @@ class Quadrant extends Polygon {
     }
 
     double getArea() {
-//        double p = (a + b + c) / 2;
-//        return Math.sqrt(p * (p - a) * (p - b) * (p - c));
         return new Triangle(p1, p2, p3).getArea() + new Triangle(p1, p3, p4).getArea();
     }
 
@@ -231,7 +229,6 @@ class Quadrant extends Polygon {
     }
 }
 
-// 1 2 3; 1 3 5; 3 4 5
 class Pentagon extends Polygon {
     final int n = 5;
     Point p1, p2, p3, p4, p5;
