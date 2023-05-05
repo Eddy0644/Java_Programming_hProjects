@@ -2,6 +2,9 @@ public class ShapeUnitTest {
     public static void main(String[] args) {
         String outputTemplate = "%8s: S=%.2f L=%.2f \n";
 
+        Line line = new Line(new Point(2, 2), new Point(4, 4));
+        System.out.printf(outputTemplate, "Line", line.getArea(), line.getLength());
+
         Circle circle = new Circle(0, 0, 1);
         System.out.printf(outputTemplate, "Circle", circle.getArea(), circle.getLength());
 
@@ -108,12 +111,6 @@ class Circle extends Shape {
 class Line extends Shape {
     Point begin, end;
 
-    public Line(int x, int y, int x2, int y2) {
-        super(x, y);
-        begin = new Point(x, y);
-        end = new Point(x2, y2);
-    }
-
     public Line(Point begin, Point end) {
         super(begin.getX(), begin.getY());
         this.begin = begin;
@@ -184,8 +181,8 @@ class Triangle extends Polygon {
         this.p2 = p2;
         this.p3 = p3;
         this.a = new Line(p1, p2).getLength();
-        this.b = new Line(p3, p2).getLength();
-        this.c = new Line(p1, p3).getLength();
+        this.b = new Line(p2, p3).getLength();
+        this.c = new Line(p3, p1).getLength();
     }
 
     double getArea() {
@@ -214,8 +211,8 @@ class Quadrant extends Polygon {
         this.p3 = p3;
         this.p4 = p4;
         this.a = new Line(p1, p2).getLength();
-        this.b = new Line(p3, p2).getLength();
-        this.c = new Line(p4, p3).getLength();
+        this.b = new Line(p2, p3).getLength();
+        this.c = new Line(p3, p4).getLength();
         this.d = new Line(p4, p1).getLength();
     }
 
@@ -240,7 +237,7 @@ class Pentagon extends Polygon {
     Point p1, p2, p3, p4, p5;
     double a, b, c, d, e;
 
-    public Pentagon(int x, int y, Point p2, Point p3, Point p4,Point p5) {
+    public Pentagon(int x, int y, Point p2, Point p3, Point p4, Point p5) {
         super(x, y);
         this.p1 = new Point(x, y);
         this.p2 = p2;
@@ -248,17 +245,18 @@ class Pentagon extends Polygon {
         this.p4 = p4;
         this.p5 = p5;
         this.a = new Line(p1, p2).getLength();
-        this.b = new Line(p3, p2).getLength();
-        this.c = new Line(p4, p3).getLength();
+        this.b = new Line(p2, p3).getLength();
+        this.c = new Line(p3, p4).getLength();
         this.d = new Line(p4, p5).getLength();
-        this.e = new Line(p1, p5).getLength();
+        this.e = new Line(p5, p1).getLength();
     }
 
     double getArea() {
-        return new Triangle(p1, p2, p3).getArea() + new Triangle(p1, p3, p5).getArea()+ new Triangle(p3, p4, p5).getArea();
+        return new Triangle(p1, p2, p3).getArea() + new Triangle(p1, p3, p5).getArea() + new Triangle(p3, p4, p5).getArea();
     }
+
     double getLength() {
-        return a + b + c + d+e;
+        return a + b + c + d + e;
     }
 
     int getInnerAngles() {
