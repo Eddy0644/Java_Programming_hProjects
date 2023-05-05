@@ -1,8 +1,13 @@
 import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.Random;
 
 public class Test1 {
-    public static JFrame win;
+    public static JFrame win,win2;
+    static JButton btn1;
+    static int hitCount=0;
     public static void main(String[] args) {
         win=new JFrame();
         win.setTitle("51522");
@@ -15,7 +20,24 @@ public class Test1 {
         ThUpdater th1=new ThUpdater();
         th1.start();
 
-        new MyWin2();
+        win2=new MyWin2();
+
+
+        ActionListener acL=new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                hitCount++;
+//                System.out.print("Hit.\n"+((JButton)e.getSource()).getText());
+                btn1.setText("Hit me! x"+hitCount);
+                btn1.setBounds(20,20,100,60);
+            }
+        };
+        btn1=new JButton("Hit me!");
+//        btn1.setFont(new Font());
+        btn1.setBounds(20,20,100,60);
+        btn1.addActionListener(acL);
+
+        win2.add(btn1);
     }
 }
 class ThUpdater extends Thread{
@@ -34,8 +56,14 @@ class ThUpdater extends Thread{
                 str.append('_');
             }
             Test1.win.setTitle(str.toString());
+
+            int savedHitCount=Test1.hitCount;
             try {
                 sleep(1000);
+                if(savedHitCount==Test1.hitCount) {
+                    Test1.hitCount = 0;
+                    Test1.btn1.setText("Hit me!");
+                }
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
@@ -45,7 +73,7 @@ class ThUpdater extends Thread{
 class MyWin2 extends JFrame{
     public MyWin2(){
         super("Window Title is here");
-        setSize(400,100);
+        setSize(300,100);
         setVisible(true);
         setLocation(300,250);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
