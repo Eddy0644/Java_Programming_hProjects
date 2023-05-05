@@ -1,6 +1,9 @@
-public class Entry {
+public class ShapeUnitTest {
     public static void main(String[] args) {
-
+        Circle circle = new Circle(0, 0, 1);
+        System.out.printf("%8s: S=%.2f L=%.2f \n", "Circle", circle.getArea(), circle.getLength());
+        Triangle triangle = new Triangle(0, 0, new Point(3, 0), new Point(3, 4));
+        System.out.printf("%8s: S=%.2f L=%.2f \n", "Triangle", triangle.getArea(), triangle.getLength());
     }
 }
 
@@ -91,11 +94,18 @@ class Circle extends Shape {
 }
 
 class Line extends Shape {
-    Point end;
+    Point begin, end;
 
     public Line(int x, int y, int x2, int y2) {
         super(x, y);
+        begin = new Point(x, y);
         end = new Point(x2, y2);
+    }
+
+    public Line(Point begin, Point end) {
+        super(begin.getX(), begin.getY());
+        this.begin = begin;
+        this.end = end;
     }
 
     double getArea() {
@@ -138,5 +148,34 @@ class Elliptic extends Circle {
 
     public void setB(int b) {
         this.b = b;
+    }
+}
+
+class Triangle extends Polygon {
+    int n = 3;
+    Point p1, p2, p3;
+    double a, b, c;
+
+    public Triangle(int x, int y, Point p2, Point p3) {
+        super(x, y);
+        this.p1 = new Point(x, y);
+        this.p2 = p2;
+        this.p3 = p3;
+        this.a = new Line(p1, p2).getLength();
+        this.b = new Line(p3, p2).getLength();
+        this.c = new Line(p1, p3).getLength();
+    }
+
+    double getArea() {
+        double p = (a + b + c) / 2;
+        return Math.sqrt(p * (p - a) * (p - b) * (p - c));
+    }
+
+    double getLength() {
+        return a + b + c;
+    }
+
+    int getInnerAngles() {
+        return 180;
     }
 }
