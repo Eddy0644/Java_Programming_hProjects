@@ -6,8 +6,9 @@ import java.awt.event.ActionListener;
 
 public class Calculator {
     public static JFrame win, win2;
-    public static int hitCount = 0;
+    public static int hitCount = 0, lastNum = 0;
     public static StringBuilder spliced, prompt;
+    public static String lastOp = "";
 
     public static void main(String[] args) {
         spliced = new StringBuilder();
@@ -29,7 +30,7 @@ public class Calculator {
             }
 
             public void insertUpdate(DocumentEvent e) {
-                System.out.println(e.toString());
+//                System.out.println(e.toString());
             }
 
             public void removeUpdate(DocumentEvent e) {
@@ -42,23 +43,48 @@ public class Calculator {
 
 
         JButton[] btnGroup = new JButton[20];
-        String operationTemplate = "+-*/=";
+        String operationTemplate = "+-*/=";// operationTemplate.contains(eText)  Objects.equals(eText, "=")
         ActionListener btnListener = e -> {
             hitCount++;
             String eText = ((JButton) e.getSource()).getText();
-            if (operationTemplate.contains(eText)) {
-
+            if (eText.equals("<")) {
+                prompt.deleteCharAt(prompt.length() - 1);
+                if(prompt.equals(""))prompt.append("0");
+                tf1.setText(prompt.toString());
+            } else if (operationTemplate.contains(eText)) {
+                int opNum = Integer.parseInt(prompt.toString()), newNum = 0;
+                spliced.append(prompt);
+                spliced.append(eText);
+                prompt = new StringBuilder();
+                if (lastOp.equals("") || lastOp.equals("=")) {
+                    // output original opNum
+                    lastOp = eText;
+                    lastNum = opNum;
+                    tf1.setText(prompt.toString());
+                } else {
+                    switch (lastOp) {
+                        case "+" -> newNum = lastNum + opNum;
+                        case "-" -> newNum = lastNum - opNum;
+                        case "*" -> newNum = lastNum * opNum;
+                        case "/" -> newNum = lastNum / opNum;
+                    }
+                    lastOp = eText;
+                    lastNum = newNum;
+                    tf1.setText(String.valueOf(newNum));
+                    prompt = new StringBuilder(String.valueOf(newNum));
+                }
+            } else {
+                prompt.append(eText);
+                tf1.setText(prompt.toString());
             }
-            prompt.append(eText);
-            tf1.setText(prompt.toString());
-            System.out.printf("Current:%8s, Total: %12s", prompt, spliced);
+            System.out.printf("Current:%6s, Total: %8s,[%6d, %2s]\n", prompt, spliced, lastNum, lastOp);
         };
         JButton btn1 = new JButton("+");
         btn1.setBounds(20, 20, 100, 60);
         btn1.addActionListener(btnListener);
 
 
-        String template = "+-.*/=1234567890";
+        String template = "+-<*/=1234567890";
         for (int i = 0; i < template.length(); i++) {
             btnGroup[i] = new JButton(String.valueOf(template.charAt(i)));
             btnGroup[i].addActionListener(btnListener);
