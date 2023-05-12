@@ -14,7 +14,7 @@ public class Calculator {
         win = new JFrame();
         win.setTitle("51522");
         win.setSize(600, 300);
-        win.setResizable(false);
+        win.setResizable(true);
         win.setVisible(true);
         win.setLocation(200, 200);
         win.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -24,17 +24,14 @@ public class Calculator {
         JTextField tf1 = new JTextField();
         tf1.getDocument().addDocumentListener(new DocumentListener() {
             public void changedUpdate(DocumentEvent e) {
-                // Handle change events
 //                System.out.println(e.toString());
             }
 
             public void insertUpdate(DocumentEvent e) {
-                // Handle insert events
                 System.out.println(e.toString());
             }
 
             public void removeUpdate(DocumentEvent e) {
-                // Handle remove events
 //                System.out.println(e.toString());
             }
         });
