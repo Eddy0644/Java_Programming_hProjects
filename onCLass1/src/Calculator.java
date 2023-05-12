@@ -1,4 +1,6 @@
 import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import java.awt.*;
 import java.awt.event.ActionListener;
 
@@ -30,20 +32,49 @@ public class Calculator {
 
         JPanel contentPane = new JPanel();
 
-        JButton[] btnGroup = new JButton[10];
-        contentPane.setLayout(new BorderLayout());
+        JButton[] btnGroup = new JButton[20];
+//        contentPane.setLayout(new BorderLayout());
+//        contentPane.setLayout(new GridLayout());
+        contentPane.setLayout(new FlowLayout());
+        String template = ".+-*/=";
         for (int i = 0; i < 10; i++) {
             btnGroup[i] = new JButton(String.valueOf(i));
             btnGroup[i].addActionListener(btnListener);
-            contentPane.add(btnGroup[i], BorderLayout.AFTER_LAST_LINE);
+            contentPane.add(btnGroup[i]);
         }
-//        contentPane.add(btn1, BorderLayout.CENTER);
-        win.setContentPane(contentPane);
+        for (int i = 10; i < 10 + template.length(); i++) {
+            btnGroup[i] = new JButton(String.valueOf(template.charAt(i - 10)));
+            btnGroup[i].addActionListener(btnListener);
+            contentPane.add(btnGroup[i]);
+        }
+//        win.setContentPane(contentPane);
+        JTextField tf1 = new JTextField();
+        tf1.getDocument().addDocumentListener(new DocumentListener() {
+            public void changedUpdate(DocumentEvent e) {
+                // Handle change events
+                System.out.println(e.toString());
+            }
+
+            public void insertUpdate(DocumentEvent e) {
+                // Handle insert events
+                System.out.println(e.toString());
+            }
+
+            public void removeUpdate(DocumentEvent e) {
+                // Handle remove events
+                System.out.println(e.toString());
+            }
+        });
+
+        tf1.setBounds(50, 50, 200, 30);
+        tf1.setPreferredSize(new Dimension(200, 30));
+        contentPane.add(tf1);
+
+        win.getContentPane().add(contentPane);
         win.pack();
 
 //        win.add(btn1);
 
-        JTextField tf1 = new JTextField();
 
     }
 }
