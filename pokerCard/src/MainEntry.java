@@ -4,6 +4,8 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
+import java.util.Collections;
 
 public class MainEntry {
     public static void main(String[] args) {
@@ -14,11 +16,12 @@ public class MainEntry {
 
 
 class PokerMain extends MouseAdapter implements KeyListener {
-    public int[] cardOrder, cardState;
+    public int[] cardState;
     public Dimension[] cardPos;
     public JLabel[] cardObj;
     public JFrame pwin;
     public int selectedCardId = 0;
+    public ArrayList<Integer> cardOrder;
 
     public PokerMain() {
         pwin = new JFrame("Poker Card Demo by Cy");
@@ -32,39 +35,54 @@ class PokerMain extends MouseAdapter implements KeyListener {
 
         initCardSet();
         cardState[20] = 1;
-        spawnCard(false);
+        spawnCard(false, false);
     }
 
     void initCardSet() {
-        cardOrder = new int[54];
+        cardOrder = new ArrayList<>(54);
         cardState = new int[54];
         cardPos = new Dimension[54];
         int initX = 10, initY = 100;
         for (int i = 0; i < 54; i++) {
-            cardOrder[i] = i + 1;
+            cardOrder.add(i + 1);
             cardPos[i] = new Dimension(initX += 20, initY += 0);
 //            cardPos[i].
         }
     }
 
-    void spawnCard(boolean isUpdate) {
-        cardObj = new JLabel[54];
-        for (int i = 53; i > 0; i--) {
+    void spawnCard(boolean isUpdate, boolean needRemove) {
+        if (needRemove) for (int i = 0; i < 54; i++) {
+            pwin.remove(cardObj[i]);
+        }
+        if (!isUpdate) cardObj = new JLabel[54];
+        for (int i = 53; i >= 0; i--) {
 //            cardObj[i] = new JLabel(new ImageIcon("./asset/puke" + cardOrder[i] + ".jpg"));
-            if (!isUpdate) cardObj[i] = new JLabel(new ImageIcon("./asset2/x100/" + cardOrder[i] + ".jpg"));
+            if (!isUpdate) cardObj[i] = new JLabel(new ImageIcon("./asset2/x100/" + cardOrder.get(i) + ".jpg"));
             int height = ((int) cardPos[i].getHeight()) - (cardState[i] == 1 ? 30 : 0);
             cardObj[i].setBounds((int) cardPos[i].getWidth(), height, 100, 145);
             if (!isUpdate) pwin.add(cardObj[i]);
         }
         if (!isUpdate) {
             pwin.pack();
-            pwin.setSize(1250, 450);
+            pwin.setSize(1250, 400);
         }
     }
 
     void spawnCard(int i) {
         int height = ((int) cardPos[i].getHeight()) - (cardState[i] == 1 ? 30 : 0);
         cardObj[i].setBounds((int) cardPos[i].getWidth(), height, 100, 145);
+    }
+
+    void resetCard() {
+        cardState = new int[54];
+        spawnCard(true, true);
+    }
+
+    void shuffleCard() {
+        cardState = new int[54];
+
+        Collections.shuffle(cardOrder);
+        spawnCard(false, true);
     }
 
     public void mouseClicked(MouseEvent e) {
@@ -91,7 +109,8 @@ class PokerMain extends MouseAdapter implements KeyListener {
             case 'a' -> selectedCardId--;
             case 's' -> cardState[selectedCardId] = 0;
             case 'd' -> selectedCardId++;
-            case 'r' -> spawnCard(selectedCardId);
+            case 'r' -> spawnCard(true, false);
+            case 'q' -> shuffleCard();
             default -> shouldRefresh = 0;
         }
         if (shouldRefresh == 1) spawnCard(selectedCardId);
