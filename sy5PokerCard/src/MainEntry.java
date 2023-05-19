@@ -1,9 +1,6 @@
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -34,8 +31,24 @@ class PokerMain extends MouseAdapter implements KeyListener {
         pwin.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         initCardSet();
-        cardState[20] = 1;
         spawnCard(false, false);
+
+        ActionListener btnListener = e -> {
+            String eText = ((JButton) e.getSource()).getText();
+            switch (eText) {
+                case "Shuffle" -> shuffleCard();
+                case "Reset" -> resetCard();
+
+            }
+        };
+        JButton btn1 = new JButton("Shuffle");
+        btn1.setBounds(20, 20, 80, 30);
+        btn1.addActionListener(btnListener);
+        pwin.add(btn1);
+        JButton btn2 = new JButton("Reset");
+        btn2.setBounds(120, 20, 80, 30);
+        btn2.addActionListener(btnListener);
+        pwin.add(btn2);
     }
 
     void initCardSet() {
@@ -56,7 +69,6 @@ class PokerMain extends MouseAdapter implements KeyListener {
         }
         if (!isUpdate) cardObj = new JLabel[54];
         for (int i = 53; i >= 0; i--) {
-//            cardObj[i] = new JLabel(new ImageIcon("./asset/puke" + cardOrder[i] + ".jpg"));
             if (!isUpdate) cardObj[i] = new JLabel(new ImageIcon("./asset2/x100/" + cardOrder.get(i) + ".jpg"));
             int height = ((int) cardPos[i].getHeight()) - (cardState[i] == 1 ? 30 : 0);
             cardObj[i].setBounds((int) cardPos[i].getWidth(), height, 100, 145);
@@ -75,7 +87,11 @@ class PokerMain extends MouseAdapter implements KeyListener {
 
     void resetCard() {
         cardState = new int[54];
-        spawnCard(true, true);
+        cardOrder.clear();
+        for (int i = 0; i < 54; i++) {
+            cardOrder.add(i + 1);
+        }
+        spawnCard(false, true);
     }
 
     void shuffleCard() {
@@ -95,12 +111,11 @@ class PokerMain extends MouseAdapter implements KeyListener {
             if (pos > 53) pos = 53;
             cardState[pos] = (cardState[pos] == 1) ? 0 : 1;
             spawnCard(pos);
-        } else System.out.printf("Out of range, dropped.\n");
+        } else System.out.print("Out of range, dropped.\n");
     }
 
     @Override
     public void keyTyped(KeyEvent e) {
-
     }
 
     @Override
@@ -119,6 +134,9 @@ class PokerMain extends MouseAdapter implements KeyListener {
         if (selectedCardId > 53) {
             selectedCardId = 53;
             System.err.println("selectedCardId out of bound!");
+        } else if (selectedCardId < 0) {
+            selectedCardId = 0;
+            System.err.println("selectedCardId out of bound!");
         }
         if (shouldRefresh == 1) spawnCard(selectedCardId);
         System.out.printf("selectedCardId is %d, state is %d.\n", selectedCardId, cardState[selectedCardId]);
@@ -126,7 +144,6 @@ class PokerMain extends MouseAdapter implements KeyListener {
 
     @Override
     public void keyReleased(KeyEvent e) {
-
     }
 
 }
