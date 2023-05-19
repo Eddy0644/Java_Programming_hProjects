@@ -87,12 +87,15 @@ class PokerMain extends MouseAdapter implements KeyListener {
 
     public void mouseClicked(MouseEvent e) {
         int x = e.getX(), y = e.getY();
-        if (x > cardPos[0].width && x < cardPos[53].width + 30 && y > cardPos[0].height && y < cardPos[0].height + 180) {
-            System.out.println("This works!");
+        System.out.printf("Mouse Clicked: (%d, %d)\t\t", x, y);
+        if (x > cardPos[0].width && x < cardPos[53].width + 110 && y > cardPos[0].height && y < cardPos[0].height + 180) {
+//            System.out.println("This works!");
             int pos = (x - cardPos[0].width) / 20;
+            System.out.printf("Calculated position: %d\n", pos);
+            if (pos > 53) pos = 53;
             cardState[pos] = (cardState[pos] == 1) ? 0 : 1;
             spawnCard(pos);
-        }
+        } else System.out.printf("Out of range, dropped.\n");
     }
 
     @Override
@@ -103,7 +106,7 @@ class PokerMain extends MouseAdapter implements KeyListener {
     @Override
     public void keyPressed(KeyEvent e) {
         int shouldRefresh = 1;
-        System.out.printf("%c-%d\n", e.getKeyChar(), e.getKeyCode());
+        System.out.printf("Key pressed: %c-%d\t\t", e.getKeyChar(), e.getKeyCode());
         switch (e.getKeyChar()) {
             case 'w' -> cardState[selectedCardId] = 1;
             case 'a' -> selectedCardId--;
@@ -113,8 +116,12 @@ class PokerMain extends MouseAdapter implements KeyListener {
             case 'q' -> shuffleCard();
             default -> shouldRefresh = 0;
         }
+        if (selectedCardId > 53) {
+            selectedCardId = 53;
+            System.err.println("selectedCardId out of bound!");
+        }
         if (shouldRefresh == 1) spawnCard(selectedCardId);
-        System.out.printf("%d-%d\n", selectedCardId, cardState[selectedCardId]);
+        System.out.printf("selectedCardId is %d, state is %d.\n", selectedCardId, cardState[selectedCardId]);
     }
 
     @Override
