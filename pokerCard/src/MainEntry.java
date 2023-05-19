@@ -32,7 +32,7 @@ class PokerMain extends MouseAdapter implements KeyListener {
 
         initCardSet();
         cardState[20] = 1;
-        spawnCard();
+        spawnCard(false);
     }
 
     void initCardSet() {
@@ -47,17 +47,19 @@ class PokerMain extends MouseAdapter implements KeyListener {
         }
     }
 
-    void spawnCard() {
+    void spawnCard(boolean isUpdate) {
         cardObj = new JLabel[54];
         for (int i = 53; i > 0; i--) {
 //            cardObj[i] = new JLabel(new ImageIcon("./asset/puke" + cardOrder[i] + ".jpg"));
-            cardObj[i] = new JLabel(new ImageIcon("./asset2/x100/" + cardOrder[i] + ".jpg"));
+            if (!isUpdate) cardObj[i] = new JLabel(new ImageIcon("./asset2/x100/" + cardOrder[i] + ".jpg"));
             int height = ((int) cardPos[i].getHeight()) - (cardState[i] == 1 ? 30 : 0);
             cardObj[i].setBounds((int) cardPos[i].getWidth(), height, 100, 145);
-            pwin.add(cardObj[i]);
+            if (!isUpdate) pwin.add(cardObj[i]);
         }
-        pwin.pack();
-        pwin.setSize(1250, 450);
+        if (!isUpdate) {
+            pwin.pack();
+            pwin.setSize(1250, 450);
+        }
     }
 
     void spawnCard(int i) {
@@ -66,7 +68,13 @@ class PokerMain extends MouseAdapter implements KeyListener {
     }
 
     public void mouseClicked(MouseEvent e) {
-
+        int x = e.getX(), y = e.getY();
+        if (x > cardPos[0].width && x < cardPos[53].width + 30 && y > cardPos[0].height && y < cardPos[0].height + 180) {
+            System.out.println("This works!");
+            int pos = (x - cardPos[0].width) / 20;
+            cardState[pos] = (cardState[pos] == 1) ? 0 : 1;
+            spawnCard(pos);
+        }
     }
 
     @Override
