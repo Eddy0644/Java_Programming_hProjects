@@ -45,7 +45,7 @@ public class Calculator {
         JTextArea tf2 = new JTextArea(2, 20);
         tf2.setLineWrap(true);
         tf2.setWrapStyleWord(true);
-        tf2.setFont(emojiFont);
+        tf2.setFont(new Font("Comic Sans MS", Font.PLAIN, 13));
         tf1.setPreferredSize(new Dimension(200, 60));
 //        tf2.setPreferredSize(new Dimension(200, 60));
 
