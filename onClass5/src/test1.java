@@ -15,7 +15,7 @@ public class test1 {
 
 class Canvas0 extends Canvas {
     private final Font[] fonts ={
-            new Font("宋体",Font.BOLD,10)
+            new Font("����",Font.BOLD,17)
     };
     @Override
     public void paint(Graphics g) {
@@ -25,9 +25,9 @@ class Canvas0 extends Canvas {
         Graphics2D g2d = (Graphics2D) g;
         g2d.setStroke(new BasicStroke(8.0f));
         g2d.drawLine(9, 99, 199, 299);
-        g2d.drawString("安微太学AHU 211 AHU 211安微太学",300,300);
+        g2d.drawString("��΢̫ѧAHU 211 AHU 211��΢̫ѧ",300,300);
         g2d.setFont(fonts[0]);
-        g2d.drawString("安微太学AHU 211 AHU 211安微太学",400,400);
+        g2d.drawString("��΢̫ѧAHU 211 AHU 211��΢̫ѧ",400,400);
     }
 }
 
