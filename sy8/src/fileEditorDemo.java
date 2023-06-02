@@ -10,11 +10,10 @@ public class fileEditorDemo {
 }
 
 class fileEditor {
-    private final JFrame win;
     private final JTextArea[] area = new JTextArea[2];
 
     public fileEditor() {
-        win = new JFrame("fileEditorDemo");
+        JFrame win = new JFrame("fileEditorDemo");
         win.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         win.setLayout(new FlowLayout());
         win.setSize(800, 500);
@@ -65,7 +64,7 @@ class fileEditor {
             StringBuilder raw = new StringBuilder();
             while ((s = reader.readLine()) != null) {
                 System.out.println("read:" + s);
-                raw.append(s);
+                raw.append(s).append("\n");
             }
             isr.close();
             area[0].setText(raw.toString());
@@ -78,10 +77,15 @@ class fileEditor {
 
     private void sort() {
         String str = area[0].getText();
-        str = str.replaceAll("DBa", "DBa\n");
-        area[1].setText(str);
+        String[] words = str.split("\n");
+        for (String s : words) {
+            if (s.startsWith("DBa") || s.startsWith("RRi")) {
+                area[1].append(s + "\n");
+            }
+        }
     }
 
+    @SuppressWarnings("ThrowFromFinallyBlock")
     private void save() {
         FileWriter fw = null;
         try {
