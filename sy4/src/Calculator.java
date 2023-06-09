@@ -97,9 +97,9 @@ public class Calculator {
 
             System.out.printf("Current:%8s, [%8d, %2s], Total: %s\n", prompt, lastNum, lastOp, spliced);
         };
-        JButton btn1 = new JButton("+");
-        btn1.setBounds(20, 20, 100, 60);
-        btn1.addActionListener(btnListener);
+//        JButton btn1 = new JButton("+");
+//        btn1.setBounds(20, 20, 100, 60);
+//        btn1.addActionListener(btnListener);
 
 
         String template = "+-<*/=1234567890";

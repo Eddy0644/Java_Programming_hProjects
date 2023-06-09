@@ -62,7 +62,7 @@ class menuWin {
         JTextField usernameField = new JTextField(20);
         JLabel passwordLabel = new JLabel("Password:");
         JPasswordField passwordField = new JPasswordField(20);
-        loginPanel.setLayout(new GridLayout(3, 3));
+        loginPanel.setLayout(new GridLayout(3, 2));
         loginPanel.add(usernameLabel);
         loginPanel.add(usernameField);
         loginPanel.add(passwordLabel);
@@ -75,10 +75,10 @@ class menuWin {
 //            JDialog diag;
             System.out.println("Username: " + username);
             System.out.println("Password: " + password);
-            if(username.equals("c")&&password.equals("y")) card.show(win.getContentPane(), "cs");
-            else{
+            if (username.equals("c") && password.equals("y")) card.show(win.getContentPane(), "cs");
+            else {
 //                diag=new JDialog(win,"Info",true);
-                JOptionPane.showMessageDialog(win,"Username or password Wrong!!!!!!","WARN",JOptionPane.WARNING_MESSAGE);
+                JOptionPane.showMessageDialog(win, "Username or password Wrong!!!!!!", "WARN", JOptionPane.WARNING_MESSAGE);
             }
         });
 
@@ -94,7 +94,7 @@ class menuWin {
             mathQA[i].setBorder(BorderFactory.createTitledBorder(etched, "ProblemSet " + (i + 1)));
             MathPanel.add(mathQA[i]);
         }
-        mathQA[0].add(new JLabel("Exclusive RadioBtn Example"));
+        mathQA[0].add(new JLabel("Exclusive RadioBtn Example\n"));
         mathQA[1].add(new JLabel("Exclusive CheckBox Example"));
         mathQA[2].add(new JLabel("Non-Exclusive CheckBox Example"));
         for (String str : new String[]{"A. 114514", "B. 1919810", "C. AHU is 211"}) {
@@ -122,7 +122,7 @@ class menuWin {
             csQA[i].setBorder(BorderFactory.createTitledBorder(etched, "ProblemSet " + (i + 1)));
             csPanel.add(csQA[i]);
         }
-        csQA[0].add(new JLabel("Which of the following is essential for us?",JLabel.CENTER));
+        csQA[0].add(new JLabel("Which of the following is essential for us?", JLabel.CENTER));
         for (String str : new String[]{"A. Honkai: Star Rail", "B. Genshin Impact", "C. Python", "D. None of above"}) {
             JRadioButton tmp = new JRadioButton(str);
             btnGrp2[0].add(tmp);
