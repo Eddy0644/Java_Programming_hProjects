@@ -1,16 +1,19 @@
 import javax.sound.sampled.*;
 import javax.swing.*;
+import javax.swing.border.Border;
+import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 
 public class MusicPlayerDemo extends JFrame {
     public PlayerCore player;
-    public int curPicIndex = 0;
+    public int curPicIndex = 1, musicLength;
     public JLabel imageLabel;
+    public JProgressBar progressBar;
 
     public MusicPlayerDemo() {
         super("Music Player Example");
-        setSize(800, 900);
+        setSize(800, 666);
         setVisible(true);
         setLocation(300, 250);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -20,6 +23,7 @@ public class MusicPlayerDemo extends JFrame {
         player = new PlayerCore("./resource/test.wav");
         player.start(true);
 
+        musicLength = (int) new File("./resource/test.wav").length();
     }
 
     public static void main(String[] args) {
@@ -30,7 +34,7 @@ public class MusicPlayerDemo extends JFrame {
         //顶部轮播图
         imageLabel = new JLabel();
 //        imageLabel.setIcon(new ImageIcon("./resource/b" + curPicIndex + ".png"));
-        imageLabel.setBounds(50, 10, 700, 300);
+        imageLabel.setBounds(20, 20, 700, 300);
         this.add(imageLabel);
         Timer timer = new Timer(2000, (x) -> {
             curPicIndex %= 5;
@@ -38,15 +42,45 @@ public class MusicPlayerDemo extends JFrame {
             imageLabel.setIcon(new ImageIcon("./resource/b" + curPicIndex + ".png"));
         });
         timer.start();
-//        timer.schedule(new ChangeImageTask(this), 0, 1500);
+
+        JPanel topPanel = new JPanel();
+        topPanel.setLayout(null);
+        topPanel.setBounds(20, 340, 700, 150);
+        topPanel.setBackground(Color.WHITE);
+        this.add(topPanel);
+        Border border1 = BorderFactory.createTitledBorder("Play Progress");
+        topPanel.setBorder(border1);
+
+        progressBar = new JProgressBar();
+        progressBar.setIndeterminate(false);
+        progressBar.setMaximum(musicLength);
+        progressBar.setStringPainted(true);
+        progressBar.setString("0%");
+        progressBar.setBounds(20, 30, 650, 20);
+        topPanel.add(progressBar);
+
+        String[] btnTitle = new String[]{"Play", "Pause", "Stop"};
+        Integer[][] dim = new Integer[][]{
+                {150, 80, 80, 30},
+                {310, 80, 80, 30},
+                {460, 80, 80, 30},
+        };
+        for (int i = 0; i < 3; i++) {
+            JButton tmp = new JButton(btnTitle[i]);
+            tmp.setBounds(dim[i][0], dim[i][1], dim[i][2], dim[i][3]);
+            tmp.addActionListener((e)->{
+
+            });
+            topPanel.add(tmp);
+        }
     }
 
 }
 
+@SuppressWarnings("InfiniteLoopStatement")
 class PlayerCore {
     private final String musicPath; // 音频文件
     private volatile boolean run = true; // 记录音频是否播放
-    private Thread mainThread; // 播放音频的任务线程
 
     private AudioInputStream audioStream;
     private SourceDataLine sourceDataLine;
@@ -149,7 +183,8 @@ class PlayerCore {
 
     // 外部调用控制方法:生成音频主线程；
     public void start(boolean loop) {
-        mainThread = new Thread(() -> {
+        // 播放音频的任务线程
+        Thread mainThread = new Thread(() -> {
             try {
                 playMusic(loop);
             } catch (InterruptedException e) {
