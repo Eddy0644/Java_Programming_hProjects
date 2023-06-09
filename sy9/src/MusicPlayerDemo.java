@@ -6,14 +6,14 @@ import java.io.File;
 import java.io.IOException;
 
 public class MusicPlayerDemo extends JFrame {
-    public PlayerCore player;
+    public final PlayerCore player;
     public int curPicIndex = 1, musicLength;
-    public JLabel imageLabel;
+    public JLabel imageLabel, volumeLabel;
     public JProgressBar progressBar;
 
     public MusicPlayerDemo() {
         super("Music Player Example");
-        setSize(800, 666);
+        setSize(800, 700);
         setVisible(true);
         setLocation(300, 250);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -31,9 +31,7 @@ public class MusicPlayerDemo extends JFrame {
     }
 
     void paintComponents() {
-        //顶部轮播图
         imageLabel = new JLabel();
-//        imageLabel.setIcon(new ImageIcon("./resource/b" + curPicIndex + ".png"));
         imageLabel.setBounds(20, 20, 700, 300);
         this.add(imageLabel);
         Timer timer = new Timer(2000, (x) -> {
@@ -68,20 +66,61 @@ public class MusicPlayerDemo extends JFrame {
         for (int i = 0; i < 3; i++) {
             JButton tmp = new JButton(btnTitle[i]);
             tmp.setBounds(dim[i][0], dim[i][1], dim[i][2], dim[i][3]);
-            tmp.addActionListener((e)->{
-
+            tmp.addActionListener((e) -> {
+                String eText = ((JButton) e.getSource()).getText();
+                switch (eText) {
+                    case "Play" -> player.resume();
+                    case "Pause" -> player.stop();
+                    case "Stop" -> {
+                        try {
+                            player.destroy();
+                        } catch (Throwable ex) {
+                            throw new RuntimeException(ex);
+                        }
+                    }
+                    default -> System.out.println("Error Occurred with Btn Input!");
+                }
             });
             topPanel.add(tmp);
         }
+
+        JPanel bottomPanel = new JPanel();
+        bottomPanel.setLayout(null);
+        bottomPanel.setBackground(Color.white);
+        bottomPanel.setBounds(20, 510, 700, 120);
+        this.add(bottomPanel);
+        Border border2 = BorderFactory.createTitledBorder("Volume Control");
+        bottomPanel.setBorder(border2);
+
+        volumeLabel = new JLabel("Current Volume: 100");
+        volumeLabel.setBounds(10, 30, 150, 20);
+        bottomPanel.add(volumeLabel);
+
+        JSlider slider = new JSlider(0, 100, 100);
+        slider.setBackground(Color.white);
+        slider.setMajorTickSpacing(10);
+        slider.setMinorTickSpacing(5);
+        slider.setPaintLabels(true);
+        slider.setPaintTicks(true);
+        slider.setBounds(20, 50, 600, 60);
+        slider.addChangeListener((e) -> {
+            synchronized (player) {
+                volumeLabel.setText("Current Volume: " + slider.getValue());
+                player.newVolume = -80.0f + 0.86f * slider.getValue();
+            }
+
+        });
+        bottomPanel.add(slider);
     }
 
 }
 
+
 @SuppressWarnings("InfiniteLoopStatement")
 class PlayerCore {
     private final String musicPath; // 音频文件
+    public float newVolume = 7;
     private volatile boolean run = true; // 记录音频是否播放
-
     private AudioInputStream audioStream;
     private SourceDataLine sourceDataLine;
 
@@ -129,13 +168,10 @@ class PlayerCore {
                 }
             } else {
                 playMusic();
-                // 清空数据行并关闭
-                sourceDataLine.drain();
-                sourceDataLine.close();
-                audioStream.close();
+                destroy();
             }
 
-        } catch (IOException ex) {
+        } catch (Throwable ex) {
             ex.printStackTrace();
         }
 
@@ -149,9 +185,9 @@ class PlayerCore {
             // 通过数据行读取音频数据流，发送到混音器;
             // 数据流传输过程：AudioInputStream -> SourceDataLine;
             audioStream = AudioSystem.getAudioInputStream(new File(musicPath));
-            int count;
             byte[] tempBuff = new byte[1024];
 
+            int count;
             while ((count = audioStream.read(tempBuff, 0, tempBuff.length)) != -1) {
                 synchronized (this) {
                     while (!run)
@@ -200,7 +236,7 @@ class PlayerCore {
     }
 
     // 外部调用控制方法：继续音频线程
-    public void continues() {
+    public void resume() {
         new Thread(this::continueMusic).start();
     }
 
@@ -212,6 +248,7 @@ class PlayerCore {
     // 设置音频音量
     // https://zhidao.baidu.com/question/269020584.html
     public void setVol(float value) {
+        newVolume = value;
         // 必须open之后
         if (value != 7) {
             FloatControl control = (FloatControl) sourceDataLine.getControl(FloatControl.Type.MASTER_GAIN);
