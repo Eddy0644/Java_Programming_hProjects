@@ -39,6 +39,8 @@ public class MusicPlayerDemo extends JFrame {
             curPicIndex++;
             imageLabel.setIcon(new ImageIcon("./resource/b" + curPicIndex + ".png"));
         });
+        java.util.Timer tm2=new java.util.Timer();
+//        tm2.schedule();
         timer.start();
 
         JPanel topPanel = new JPanel();
