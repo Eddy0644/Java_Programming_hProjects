@@ -177,7 +177,6 @@ class ChatRoomClient extends JFrame {
         textArea.setFont(testfont);
         JScrollPane scrollPane = new JScrollPane(textArea);
         scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-//        scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         contentPane.add(scrollPane);
 
         textField = new JTextField();
@@ -227,6 +226,9 @@ class ChatRoomClient extends JFrame {
         }
     }
 }
+
+
+
 
 //class helper<T> {
 //    public Class<? extends JFrame> in;
