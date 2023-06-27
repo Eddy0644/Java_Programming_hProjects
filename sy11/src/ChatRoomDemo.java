@@ -15,20 +15,19 @@ public class ChatRoomDemo {
 }
 
 class ChatRoomServer extends JFrame {
+    private final ArrayList<ResponseThread> clientList = new ArrayList<>();
     String hostname;
-    int port;
     JTextArea textArea;     // For dual-direction messages
-    JTextField textField;  // Message waiting to be sent
+    JTextField textField;   // Message waiting to be sent
     ServerSocket server;
     PrintWriter pw;
-    private final ArrayList<ResponseThread> clientList = new ArrayList<>();
 
     public ChatRoomServer(String name, int port) {
         super("ChatServer " + name);
         this.hostname = name;
         paintComponent();
         try {
-            server = new ServerSocket(this.port);
+            server = new ServerSocket(port);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -41,42 +40,35 @@ class ChatRoomServer extends JFrame {
     }
 
     void sendAll(String msg) {
-        if (!"".equals(msg)) {
-            for (ResponseThread rt : clientList) {
-                rt.send(msg);
-            }
+        if (!"".equals(msg)) for (ResponseThread rt : clientList) {
+            rt.send(msg);
         }
     }
 
     private void paintComponent() {
         Container contentPane = this.getContentPane();
         contentPane.setLayout(new FlowLayout());
-        textArea = new JTextArea(20, 30);
-        textField = new JTextField();
-        textField.setPreferredSize(new Dimension(350, 30));
 
-        //创建滚动面板
+        textArea = new JTextArea(20, 30);
         JScrollPane scrollPane = new JScrollPane(textArea);
         scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 //        scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        contentPane.add(scrollPane);
 
+        textField = new JTextField();
+        textField.setPreferredSize(new Dimension(350, 30));
+        contentPane.add(textField);
 
         JButton sendBtn = new JButton("Send");
-        //服务端发送按钮事件绑定
         sendBtn.addActionListener(e -> {
             String msg = textField.getText();
             textArea.append(hostname + ": " + msg + "\n");
             sendAll(hostname + ": " + msg);
             textField.setText("");
         });
-
-        //清空记录事件绑定
         JButton clearBtn = new JButton("Clear");
-        clearBtn.addActionListener(e -> {
-            textArea.setText("");
-        });
-        contentPane.add(scrollPane);
-        contentPane.add(textField);
+        clearBtn.addActionListener(e -> textArea.setText(""));
+
         contentPane.add(sendBtn);
         contentPane.add(clearBtn);
     }
