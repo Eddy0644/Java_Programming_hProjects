@@ -12,14 +12,15 @@ public class ChatRoomDemo {
     public static void main(String[] args) {
         new ChatRoomServer("SRV - 0", 23001);
         new ChatRoomClient("CLI - 1", 23001, 1);
+        new ChatRoomClient("CLI - 2", 23001, 2);
     }
 }
 
 class ChatRoomServer extends JFrame {
     private final ArrayList<ResponseThread> clientList = new ArrayList<>();
+    public JTextArea textArea;     // For dual-direction messages
+    public JTextField textField;   // Message waiting to be sent
     String hostname;
-    JTextArea textArea;     // For dual-direction messages
-    JTextField textField;   // Message waiting to be sent
     ServerSocket server;
     PrintWriter pw;
 
@@ -137,13 +138,13 @@ class ChatRoomServer extends JFrame {
 }
 
 class ChatRoomClient extends JFrame {
+    public JTextArea textArea;     // For dual-direction messages
+    public JTextField textField;   // Message waiting to be sent
     String hostname;
-    JTextArea textArea;     // For dual-direction messages
-    JTextField textField;   // Message waiting to be sent
     PrintWriter pw;
     Socket socket;
 
-    public ChatRoomClient(String name, int port, int pos) {
+    public ChatRoomClient(String name, int port, int winPos) {
         super("ChatClient " + name);
         this.hostname = name;
         paintComponent();
@@ -152,7 +153,7 @@ class ChatRoomClient extends JFrame {
         new Thread(new ReceiveThread(socket)).start();
 
 
-        this.setBounds(380 * pos, 0, 380, 470);
+        this.setBounds(380 * winPos, 0, 380, 470);
         this.setVisible(true);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
@@ -168,13 +169,12 @@ class ChatRoomClient extends JFrame {
     }
 
     private void paintComponent() {
+//        Container contentPane = new helper<ChatRoomClient>(this).prePaint();
         Container contentPane = this.getContentPane();
         contentPane.setLayout(new FlowLayout());
-
         textArea = new JTextArea(18, 36);
         Font testfont = new Font("Consolas", Font.PLAIN, 16);
         textArea.setFont(testfont);
-
         JScrollPane scrollPane = new JScrollPane(textArea);
         scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 //        scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
@@ -201,13 +201,11 @@ class ChatRoomClient extends JFrame {
     }
 
     class ReceiveThread implements Runnable {
-        BufferedReader br;  //负责读出数据
-        private Socket client;
+        BufferedReader br;
 
         public ReceiveThread(Socket client) {
-            this.client = client;
             try {
-                InputStreamReader isr = new InputStreamReader(this.client.getInputStream());
+                InputStreamReader isr = new InputStreamReader(client.getInputStream());
                 br = new BufferedReader(isr);
             } catch (Exception e) {
                 e.printStackTrace();
@@ -217,7 +215,6 @@ class ChatRoomClient extends JFrame {
         @Override
         public void run() {
             while (true) {
-                //接收数据
                 try {
                     String msg = br.readLine();
                     if (!"".equals(msg.trim())) {
@@ -230,3 +227,25 @@ class ChatRoomClient extends JFrame {
         }
     }
 }
+
+//class helper<T> {
+//    public Class<? extends JFrame> in;
+//
+//    public helper(Class<? extends JFrame> t1) {
+//        in = t1;
+//    }
+//
+//    public Container prePaint() {
+//        Container contentPane = in.getContentPane();
+//        contentPane.setLayout(new FlowLayout());
+//        in.textArea = new JTextArea(18, 36);
+//        Font testfont = new Font("Consolas", Font.PLAIN, 16);
+//        in.textArea.setFont(testfont);
+//        JScrollPane scrollPane = new JScrollPane(in.textArea);
+//        scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+////        scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+//        contentPane.add(scrollPane);
+//
+//        return contentPane;
+//    }
+//}
