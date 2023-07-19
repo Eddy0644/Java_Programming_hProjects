@@ -10,9 +10,20 @@ import java.util.ArrayList;
 
 public class ChatRoomDemo {
     public static void main(String[] args) {
-        new ChatRoomServer("SRV - 0", 23001);
-        new ChatRoomClient("CLI - 1", 23001, 1);
-        new ChatRoomClient("CLI - 2", 23001, 2);
+//        new ChatRoomServer("SRV - 0", 23001);
+//        new ChatRoomClient("CLI - 1", 23001, 1);
+//        new ChatRoomClient("CLI - 2", 23001, 2);
+        String a = "ahukkahukbhahiahuikk";
+        String[] b = a.split("ahuk");
+        StringBuilder c=new StringBuilder(a);
+        c.reverse().toString();
+        return;
+    }
+    public int a(){
+        return 0;
+    }
+    public double a(int i){
+        return 0.0;
     }
 }
 
@@ -226,8 +237,6 @@ class ChatRoomClient extends JFrame {
         }
     }
 }
-
-
 
 
 //class helper<T> {
